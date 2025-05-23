@@ -3,7 +3,7 @@ module.exports = {
         android: {},
         ios: {},
     },
-    assets: [],
+    assets: ['./src/assets/fonts'],
     cliConfig: {
         entryFile: 'index.tsx',
     },
