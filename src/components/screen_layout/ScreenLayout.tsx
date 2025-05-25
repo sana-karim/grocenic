@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { GrocenicTheme } from "../../theme/GrocenicTheme";
 
 interface ScreensLayoutProps {
     headerComponent?: React.ReactNode,
@@ -8,7 +9,7 @@ interface ScreensLayoutProps {
     backgroundColor?: string,
 }
 
-export const ScreenLayout: React.FC<ScreensLayoutProps> = ({ headerComponent, children, backgroundColor = '#fff' }) => {
+export const ScreenLayout: React.FC<ScreensLayoutProps> = ({ headerComponent, children, backgroundColor = GrocenicTheme.colors.background }) => {
 
     const insets = useSafeAreaInsets();
 
