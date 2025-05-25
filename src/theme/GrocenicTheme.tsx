@@ -4,8 +4,8 @@ export const GrocenicTheme = {
         primaryLight: '#CFF5C2',
         secondary: '#F6D776',
         accent: '#A3D2CA',
-        background: '#FDFDFD',
-        cardBackground: '#FFFFFF',
+        background: '#F9FAF4',
+        white: '#FFFFFF',
         textPrimary: '#333333',
         textSecondary: '#666666',
         border: '#E6E6E6',
@@ -23,12 +23,14 @@ export const GrocenicTheme = {
         sm: 6,
         md: 12,
         lg: 20,
+        xl: 24,
     },
     fontSize: {
         small: 14,
         medium: 16,
         large: 20,
-        title: 24
+        title: 24,
+        headerTitle: 28
     },
     fonts: {
         thin: 'Poppins-Thin',                           //100
@@ -51,3 +53,4 @@ export const GrocenicTheme = {
         blackItalic: 'Poppins-BlackItalic',
     },
 };
+Object.freeze(GrocenicTheme);
