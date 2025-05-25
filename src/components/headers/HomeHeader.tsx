@@ -7,8 +7,8 @@ export const HomeHeader: React.FC = () => {
         <>
             <View style={styles.container}>
                 <Text style={styles.headerLabel}>Grocenic</Text>
-                <TouchableOpacity style={{ position: 'absolute', top: '41%', right: '3%', backgroundColor: GrocenicTheme.colors.cardBackground }}
-                    activeOpacity={0.6}
+                <TouchableOpacity style={styles.addItemBtn}
+                    activeOpacity={0.8}
                     onPress={() => {
                         //TODO: function called later
                     }}
@@ -25,13 +25,18 @@ const styles = StyleSheet.create({
         position: 'relative',
         alignItems: 'center',
         paddingVertical: 10,
-        paddingBottom: 5,
-        paddingHorizontal: 16,
-        backgroundColor: GrocenicTheme.colors.cardBackground
+        paddingBottom: 4,
+        paddingHorizontal: GrocenicTheme.spacing.md,
+        backgroundColor: GrocenicTheme.colors.background
     },
     headerLabel: {
-        fontSize: GrocenicTheme.fontSize.title,
+        fontSize: GrocenicTheme.fontSize.headerTitle,
         color: GrocenicTheme.colors.textPrimary,
         fontFamily: GrocenicTheme.fonts.medium,
+    },
+    addItemBtn: {
+        position: 'absolute',
+        top: '30%',
+        right: GrocenicTheme.spacing.md,
     }
 })
