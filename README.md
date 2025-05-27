@@ -49,6 +49,16 @@ npm start
 npx react-native run-ios
 ```
 
+### For splashscreen generation
+
+```bash
+    yarn react-native-bootsplash generate src/assets/images splash_screen_logo_v4.png \
+        --platforms=android,ios \
+        --background=FFFFFF \
+        --logo-width=150 \
+        --assets-output=assets/bootsplash
+```
+
 ## 🪪 License
 
 This project is licensed under the MIT License.
