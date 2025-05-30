@@ -1,6 +1,7 @@
 export const GrocenicTheme = {
     colors: {
         primary: '#7BC96F',
+        primaryDisabled: '#CFF5C2',
         primaryLight: '#CFF5C2',
         secondary: '#F6D776',
         accent: '#A3D2CA',
@@ -11,6 +12,7 @@ export const GrocenicTheme = {
         border: '#E6E6E6',
         error: '#FF6B6B',
         success: '#6BCB77',
+        danger: '#FF3B30'
     },
     spacing: {
         xs: 4,

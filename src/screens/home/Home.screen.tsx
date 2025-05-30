@@ -15,9 +15,10 @@ interface HomeProps {
 
 export const Home: React.FC<HomeProps> = ({ navigation }) => {
 
-    const renderItem = ({ item, index }: { item: any, index: number }) => {
+    const renderItem = ({ item }: { item: any }) => {
         return (
             <ListItem
+                id={item.id}
                 itemLabel={item.itemLabel}
                 quantity={item.quantity}
             />

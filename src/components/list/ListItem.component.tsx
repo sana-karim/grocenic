@@ -1,29 +1,39 @@
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GrocenicTheme } from "../../theme/GrocenicTheme";
+import { ContextMenu } from "../contextMenu/ContextMenu.component";
 
 interface ListItemProps {
+    id: string | number;
     itemLabel: string | number;
     quantity?: string | number;
-    onOptBtn?: any
+    onOptBtn?: any;
 };
 
-export const ListItem: React.FC<ListItemProps> = ({ itemLabel, quantity, onOptBtn }) => {
+export const ListItem: React.FC<ListItemProps> = ({ id, itemLabel, quantity, onOptBtn }) => {
+
+    const onEdit = (itemId: string | number) => {
+        console.log(`Edit called ${itemId}`);
+    }
+    const onDelete = (itemId: string | number) => {
+        console.log(`Delete called ${itemId}`);
+    }
     return (
         <View style={styles.container}>
             <View style={styles.textContainer}>
                 <Text style={styles.text}>{itemLabel}</Text>
                 <Text style={styles.quantity}>{quantity}</Text>
             </View >
-            <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {
-                    //TODO: function called later
-                }}
+            <ContextMenu
+                id={id}
+                options={[
+                    { label: 'Edit', onPress: onEdit },
+                    { label: 'Delete', onPress: onDelete, textStyle: { color: GrocenicTheme.colors.danger } },
+                ]}
             >
                 <Image source={require('../../assets/images/more_option.png')} />
-            </TouchableOpacity>
-        </View>
+            </ContextMenu>
+        </View >
 
     )
 }
