@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, SafeAreaView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GrocenicTheme } from "../../theme/GrocenicTheme";
 
@@ -14,28 +14,22 @@ export const ScreenLayout: React.FC<ScreensLayoutProps> = ({ headerComponent, ch
     const insets = useSafeAreaInsets();
 
     return (
-        <View style={[styles.container, { backgroundColor }]}>
-            {/* Top safe area space */}
-            <View style={{ height: insets.top }} />
+        <SafeAreaView style={[styles.container, { backgroundColor }]}>
 
             {/* Optional Header */}
             {headerComponent}
 
             {/* Main Content Area */}
-            <View style={[
-                styles.content,
-                { paddingBottom: insets.bottom },
-            ]}>
+            <View style={styles.content}>
                 {children}
             </View>
-        </View>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingBottom: 2
     },
     content: {
         flex: 1,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavigationProp } from '@react-navigation/native';
 import { FlatList, View } from 'react-native';
 import { ScreenLayout } from '../../components/screen_layout/ScreenLayout';
@@ -8,6 +8,9 @@ import { SubHeader } from '../../components/headers/SubHeader.component';
 import { GroceryData } from '../../constants/dataConstant';
 import { ListItem } from '../../components/list/ListItem.component';
 import { GrocenicTheme } from '../../theme/GrocenicTheme';
+import { PrimaryButton } from '../../components/buttons/PrimaryButton.component';
+import { AddItemModal } from '../../components/modals/addItem/AddItem.modal';
+import { ContextMenuItemTypes } from '../../components/contextMenu/utils/ContextMenuItemTypes';
 
 interface HomeProps {
     navigation?: NavigationProp<any>;
@@ -15,15 +18,64 @@ interface HomeProps {
 
 export const Home: React.FC<HomeProps> = ({ navigation }) => {
 
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [editItem, setEditItem] = useState<any | null>(null);
+
+    const onOptBtn = (data: any) => {
+        if (data.type === ContextMenuItemTypes.EDIT) {
+            setEditItem(data);
+            setShowModal(true);
+        }
+    };
+
+    const renderModal = () => {
+        return (
+            <AddItemModal
+                show={showModal}
+                onClose={
+                    () => {
+                        setShowModal(false);
+                        setEditItem(null);
+                    }
+                }
+                isEdit={Boolean(editItem)}
+                defaultValue={editItem}
+            />
+        )
+    };
+
+    const renderButton = () => {
+        return (
+            <View style={styles.btnContainer}>
+                <PrimaryButton
+                    label='Add Item'
+                    onPress={() => {
+                        setShowModal(true);
+                        setEditItem(null);
+                    }}
+                    containerStyle={styles.addItemBtnContainer}
+                    labelStyle={styles.addItemBtn}
+                />
+            </View>
+        )
+    };
+
+    const renderSubHeader = () => {
+        return (
+            <SubHeader headerLabel='Grocery List' />
+        )
+    };
+
     const renderItem = ({ item }: { item: any }) => {
         return (
             <ListItem
                 id={item.id}
                 itemLabel={item.itemLabel}
                 quantity={item.quantity}
+                onOptBtn={onOptBtn}
             />
         )
-    }
+    };
 
     const renderList = () => {
         return (
@@ -31,7 +83,7 @@ export const Home: React.FC<HomeProps> = ({ navigation }) => {
                 data={GroceryData}
                 renderItem={renderItem}
                 showsVerticalScrollIndicator={false}
-                ListFooterComponent={<View style={{ marginBottom: 34 }} />}
+                // ListFooterComponent={<View style={{ marginBottom: 0 }} />}
                 contentContainerStyle={{
                     paddingTop: GrocenicTheme.spacing.sm,
                     paddingBottom: GrocenicTheme.spacing.sm
@@ -42,7 +94,8 @@ export const Home: React.FC<HomeProps> = ({ navigation }) => {
 
     const renderUi = () => {
         return (
-            <View style={styles.listContainer}>
+
+            <View style={styles.listAndBtnContainer}>
                 {renderList()}
             </View>
         )
@@ -50,8 +103,10 @@ export const Home: React.FC<HomeProps> = ({ navigation }) => {
 
     return (
         <ScreenLayout headerComponent={<HomeHeader />}>
-            <SubHeader headerLabel='Grocery List' />
+            {renderSubHeader()}
             {renderUi()}
+            {renderButton()}
+            {renderModal()}
         </ScreenLayout>
     )
 

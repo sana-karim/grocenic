@@ -2,6 +2,7 @@ import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GrocenicTheme } from "../../theme/GrocenicTheme";
 import { ContextMenu } from "../contextMenu/ContextMenu.component";
+import { ContextMenuItemTypes } from "../contextMenu/utils/ContextMenuItemTypes";
 
 interface ListItemProps {
     id: string | number;
@@ -13,10 +14,12 @@ interface ListItemProps {
 export const ListItem: React.FC<ListItemProps> = ({ id, itemLabel, quantity, onOptBtn }) => {
 
     const onEdit = (itemId: string | number) => {
-        console.log(`Edit called ${itemId}`);
+        const data = { type: ContextMenuItemTypes.EDIT, id: itemId, name: itemLabel, quantity: quantity };
+        onOptBtn(data);
     }
     const onDelete = (itemId: string | number) => {
-        console.log(`Delete called ${itemId}`);
+        const data = { type: ContextMenuItemTypes.DELETE, id: itemId, name: itemLabel, quantity: quantity };
+        onOptBtn(data);
     }
     return (
         <View style={styles.container}>
@@ -27,7 +30,7 @@ export const ListItem: React.FC<ListItemProps> = ({ id, itemLabel, quantity, onO
             <ContextMenu
                 id={id}
                 options={[
-                    { label: 'Edit', onPress: onEdit },
+                    { label: 'Edit', onPress: () => onEdit(id) },
                     { label: 'Delete', onPress: onDelete, textStyle: { color: GrocenicTheme.colors.danger } },
                 ]}
             >
