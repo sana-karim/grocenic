@@ -19,6 +19,7 @@ export const SubHeader: React.FC<SubHeaderProps> = ({ headerLabel }) => {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: GrocenicTheme.colors.background,
         paddingHorizontal: GrocenicTheme.spacing.md,
     },
     subHeaderLabel: {
