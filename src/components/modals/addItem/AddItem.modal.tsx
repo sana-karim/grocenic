@@ -5,10 +5,11 @@ import styles from './AddItemModal.style';
 import { PrimaryText } from "../../texts/PrimaryText";
 import { InputField, InputFieldRef } from "../../formFields/InputField.component";
 import { PrimaryButton } from "../../buttons/PrimaryButton.component";
-import { Alert } from "react-native";
+import { useAppDispatch } from "../../../redux/hooks";
+import { createItem, editItem } from "../../../redux/thunks/itemsThunks";
 
 type defaultValueData = {
-    id: number | string;
+    id: number | string | undefined;
     name: string;
     quantity: string;
 };
@@ -20,13 +21,20 @@ interface AddItemModalProps {
     isEdit?: boolean;
 }
 
+// In the future, if we need to collect the user's gender and age from this modal,
+// we should pass the input fields and refs from the parent component.
+
 export const AddItemModal: React.FC<AddItemModalProps> = ({ show, onClose, isEdit = false, defaultValue = {} }) => {
-    console.log(defaultValue, ':: Default value');
+
     const inputRefs = useRef<{ [key: string]: InputFieldRef | null }>({});
     const formDataRef = useRef<{ [key: string]: any }>(isEdit && defaultValue ? { ...defaultValue } : {});
 
+    const dispatch = useAppDispatch();
+
     const handleSubmit = () => {
+
         let allValid = true;
+
         Object.values(inputRefs.current).forEach(ref => {
             if (ref && typeof ref.validate === 'function') {
                 const isValid = ref.validate();
@@ -37,13 +45,25 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ show, onClose, isEdi
         });
 
         if (allValid) {
-            console.log(formDataRef.current, 'formDataRef')
+
+            if (formDataRef.current?.type === 'CREATE') {
+                const payload = {
+                    name: formDataRef.current.name,
+                    quantity: formDataRef.current.quantity,
+                    shared: false
+                };
+                dispatch(createItem(payload));
+            } else if (formDataRef.current?.type === 'UPDATE') {
+                const payload = {
+                    id: formDataRef.current.id,
+                    name: formDataRef.current.name,
+                    quantity: formDataRef.current.quantity,
+                    shared: false
+                };
+                dispatch(editItem(payload));
+            }
 
             onClose();
-            const formatted = Object.entries(formDataRef.current)
-                .map(([key, value]) => `${key}: ${value}`)
-                .join('\n');
-            Alert.alert('Submitted Data', formatted);
         }
     }
 

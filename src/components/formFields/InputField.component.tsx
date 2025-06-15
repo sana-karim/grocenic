@@ -11,7 +11,7 @@ export interface InputFieldRef {
 }
 
 interface InputFieldProps {
-    id: string | number;
+    id: string | number | undefined;
     type?: 'text' | 'number';
     name: string;
     formData: any;
@@ -49,9 +49,11 @@ export const InputField = forwardRef<InputFieldRef, InputFieldProps>(({
 
     if (isEdit && id !== undefined) {
         formData.current['id'] = id;
+        formData.current['type'] = 'UPDATE';
     }
     if ((!isEdit && id === undefined) || (!isEdit && id !== undefined)) {
         delete formData.current.id;
+        formData.current['type'] = 'CREATE';
     }
 
     const validate = (): boolean => {
