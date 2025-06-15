@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
-import { StatusBar, StyleSheet } from "react-native";
+import { StatusBar } from "react-native";
 import { ToastProvider } from 'react-native-toast-notifications';
 import MainNavigation from "./navigation/navigation";
 import { GrocenicTheme } from "./theme/GrocenicTheme";
 import BootSplash from "react-native-bootsplash";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 export const Main = () => {
 
@@ -18,7 +20,7 @@ export const Main = () => {
     }, []);
 
     return (
-        <>
+        <Provider store={store}>
             <StatusBar
                 animated={true}
                 backgroundColor={GrocenicTheme.colors.textPrimary}
@@ -26,6 +28,6 @@ export const Main = () => {
             <ToastProvider>
                 <MainNavigation />
             </ToastProvider>
-        </>
+        </Provider>
     )
 }
