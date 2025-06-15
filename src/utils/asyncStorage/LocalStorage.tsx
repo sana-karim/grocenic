@@ -28,7 +28,7 @@ export abstract class LocalStorage {
             let data = await AsyncStorage.getItem(key);
             if (data == null) return null;
             data = JSON.parse(data);
-            return data;
+            return this.getDataInStandardFormatFromStorage(data);
         } catch (err) {
             console.error('Error while getting the data from local storage: ', err)
             return null;
@@ -58,5 +58,13 @@ export abstract class LocalStorage {
         const valueDataType = typeof data;
         return JSON.stringify({ type: valueDataType, data: data });
     };
+
+    private getDataInStandardFormatFromStorage = (localStorageData: any): any => {
+        const { type, data } = localStorageData;
+        if (type === 'object' || type === 'number' || type === 'boolean') {
+            return data;
+        }
+        return data;
+    }
 
 }
