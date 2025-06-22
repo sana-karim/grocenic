@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
 import { NavigationProp } from '@react-navigation/native';
-import { FlatList, View } from 'react-native';
-import { ScreenLayout } from '../../components/screen_layout/ScreenLayout';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Image, View } from 'react-native';
+import { PrimaryButton } from '../../components/buttons/PrimaryButton.component';
+import { ContextMenuItemTypes } from '../../components/contextMenu/utils/ContextMenuItemTypes';
 import { HomeHeader } from '../../components/headers/HomeHeader';
-import styles from './Home.style';
 import { SubHeader } from '../../components/headers/SubHeader.component';
 import { ListItem } from '../../components/list/ListItem.component';
-import { GrocenicTheme } from '../../theme/GrocenicTheme';
-import { PrimaryButton } from '../../components/buttons/PrimaryButton.component';
 import { AddItemModal } from '../../components/modals/addItem/AddItem.modal';
-import { ContextMenuItemTypes } from '../../components/contextMenu/utils/ContextMenuItemTypes';
+import { ScreenLayout } from '../../components/screen_layout/ScreenLayout';
+import { PrimaryText } from '../../components/texts/PrimaryText';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { deleteItem, syncLocalItemsToRedux } from '../../redux/thunks/itemsThunks';
+import { GrocenicTheme } from '../../theme/GrocenicTheme';
+import styles from './Home.style';
 
 interface HomeProps {
     navigation?: NavigationProp<any>;
@@ -102,11 +103,25 @@ export const Home: React.FC<HomeProps> = ({ navigation }) => {
         )
     };
 
+    const renderEmptyList = (): React.ReactNode => {
+        return (
+            <View style={styles.emptyListContainer}>
+                <Image source={require('../../assets/images/empty_icon.png')} />
+                <PrimaryText text="Welcome to Grocenic" customStyle={styles.emptyListLabel} />
+                <PrimaryText text="Your list is empty" customStyle={styles.emptyListStateLabel} />
+            </View>
+        )
+    }
+
     const renderUi = () => {
         return (
 
             <View style={styles.listAndBtnContainer}>
-                {renderList()}
+                {
+                    items.items.length > 0
+                        ? renderList()
+                        : renderEmptyList()
+                }
             </View>
         )
     };
