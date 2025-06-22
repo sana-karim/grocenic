@@ -1,51 +1,77 @@
-import React, { forwardRef, useImperativeHandle, useRef, useState } from "react";
-import { StyleSheet, TextInput } from "react-native";
-import { TextStyle, View, ViewStyle } from "react-native";
-import { PrimaryText } from "../texts/PrimaryText";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { InteractionManager, Keyboard, StyleSheet, TextInput, TextStyle, View, ViewStyle } from "react-native";
 import { GrocenicTheme } from "../../theme/GrocenicTheme";
+import { PrimaryText } from "../texts/PrimaryText";
 
 export interface InputFieldRef {
     value: string;             //Current text value
     validate: () => boolean;   //Run validation: returns true if valid
     reset: () => void;         //Clear the field and errors
+    //focus: () => void;       //focus the input from parent : Optional
 }
 
 interface InputFieldProps {
     id: string | number | undefined;
-    type?: 'text' | 'number';
     name: string;
     formData: any;
+    isEdit: boolean;
+    type?: 'text' | 'number';
     placeholder?: string;
     required?: boolean;
     validationMsg?: string;
     containerStyle?: ViewStyle;
-    isEdit: boolean;
-    defaultValue?: string;
     inputStyle?: TextStyle;
     errorStyle?: TextStyle;
+    defaultValue?: string;
     onChangeText?: (text: string) => void;
     onBlur?: () => void;
+    autoFocus?: boolean;
+    returnKeyType?: 'next' | 'done';
 }
+
+// Shared map to reference all inputs by name
+const inputRefsMap: { [key: string]: TextInput | null } = {};
 
 export const InputField = forwardRef<InputFieldRef, InputFieldProps>(({
     id,
-    type = 'text',
     name,
     formData,
+    isEdit,
+    type = 'text',
     placeholder = '',
     required = false,
     validationMsg = 'This field is required',
     containerStyle,
     inputStyle,
-    isEdit,
-    defaultValue,
     errorStyle,
+    defaultValue,
     onChangeText: onChangeTextProp,
-    onBlur: onBlurProp
+    onBlur: onBlurProp,
+    autoFocus = false,
+    returnKeyType = 'next'
 }, ref) => {
 
     const valueRef = useRef<string>(!!defaultValue ? formData.current[name] = defaultValue : ''); // to store input value
     const [error, setError] = useState<string>('') // to store error msg
+    const inputRef = useRef<TextInput>(null);      //using this internal ref only for keyboard open on focused modal open
+
+    //Autofocus
+    useEffect(() => {
+        if (autoFocus && !isEdit) {
+            InteractionManager.runAfterInteractions(() => {
+                requestAnimationFrame(() => {
+                    inputRef.current?.focus();
+                });
+            })
+        }
+    }, [autoFocus]);
+
+    useEffect(() => {
+        inputRefsMap[name] = inputRef.current;
+        return () => {
+            delete inputRefsMap[name];
+        };
+    }, []);
 
     if (isEdit && id !== undefined) {
         formData.current['id'] = id;
@@ -56,6 +82,7 @@ export const InputField = forwardRef<InputFieldRef, InputFieldProps>(({
         formData.current['type'] = 'CREATE';
     }
 
+    // === Validation ===
     const validate = (): boolean => {
         let errorMsg = '';
         if (required && !valueRef.current) {
@@ -69,6 +96,7 @@ export const InputField = forwardRef<InputFieldRef, InputFieldProps>(({
         return !errorMsg; //return true if no error
     }
 
+    // === Expose Methods to Parent via Ref ===
     useImperativeHandle(ref, () => ({
         get value() {
             return valueRef.current;
@@ -77,9 +105,17 @@ export const InputField = forwardRef<InputFieldRef, InputFieldProps>(({
         reset: () => {
             valueRef.current = '';
             setError('');
-        }
+        },
+        // focus: () => {
+        //     InteractionManager.runAfterInteractions(() => {
+        //         requestAnimationFrame(() => {
+        //             inputRef.current?.focus();
+        //         })
+        //     })
+        // }
     }));
 
+    // === Handlers ===
     const onChangeText = (inputText: string) => {
         valueRef.current = inputText; //updating ref here
         formData.current[name] = inputText;
@@ -89,19 +125,40 @@ export const InputField = forwardRef<InputFieldRef, InputFieldProps>(({
         };
     };
 
+    const handleSubmitEditing = () => {
+        const keys = Object.keys(inputRefsMap);
+        const currentIndex = keys.indexOf(name);
+        if (currentIndex !== -1 && currentIndex + 1 < keys.length) {
+            const nextInput = inputRefsMap[keys[currentIndex + 1]];
+            nextInput?.focus();
+        } else {
+            Keyboard.dismiss();
+        }
+    };
+
+    const handleBlur = () => {
+        // validate();         //Validating on blur
+        onBlurProp?.();
+    };
+
     return (
         <View style={[styles.container, containerStyle]}>
             <TextInput
-                placeholderTextColor={GrocenicTheme.colors.textSecondary}
+                ref={inputRef}                              //using this internal ref only for keyboard open on focused modal open
                 placeholder={placeholder}
+                placeholderTextColor={GrocenicTheme.colors.textSecondary}
                 keyboardType={type === 'number' ? 'numeric' : 'default'}
-                onChangeText={onChangeText}
+                returnKeyType={returnKeyType}
                 defaultValue={valueRef.current}
-                onBlur={() => {
-                    //validate();             / / validating on blur
-                    onBlurProp?.();
-                }}
-                style={[styles.inputField, inputStyle, { borderColor: error ? GrocenicTheme.colors.danger : 'transparent' }]}
+                onChangeText={onChangeText}
+                onSubmitEditing={handleSubmitEditing}
+                onBlur={handleBlur}
+                blurOnSubmit={false}
+                style={[
+                    styles.inputField,
+                    inputStyle,
+                    { borderColor: error ? GrocenicTheme.colors.danger : 'transparent' }
+                ]}
             />
             {error && <PrimaryText text={error} customStyle={[styles.errorText, errorStyle]} />}
         </View>

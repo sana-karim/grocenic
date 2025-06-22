@@ -1,12 +1,12 @@
 import React, { useRef } from "react";
-import { ModalWrapper } from "../ModalWrapper.component";
 import { Image, TouchableOpacity, View } from "react-native";
-import styles from './AddItemModal.style';
-import { PrimaryText } from "../../texts/PrimaryText";
-import { InputField, InputFieldRef } from "../../formFields/InputField.component";
-import { PrimaryButton } from "../../buttons/PrimaryButton.component";
 import { useAppDispatch } from "../../../redux/hooks";
 import { createItem, editItem } from "../../../redux/thunks/itemsThunks";
+import { PrimaryButton } from "../../buttons/PrimaryButton.component";
+import { InputField, InputFieldRef } from "../../formFields/InputField.component";
+import { PrimaryText } from "../../texts/PrimaryText";
+import { ModalWrapper } from "../ModalWrapper.component";
+import styles from './AddItemModal.style';
 
 type defaultValueData = {
     id: number | string | undefined;
@@ -78,28 +78,30 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ show, onClose, isEdi
                 </View>
                 <View style={styles.formContainer}>
                     <InputField
-                        ref={ref => { inputRefs.current['name'] = ref }}
+                        id={defaultValue?.id ?? ''}
                         name={'name'}
                         formData={formDataRef}
-                        placeholder="Enter item name"
                         isEdit={isEdit}
-                        id={defaultValue?.id ?? ''}
-                        defaultValue={defaultValue?.name ?? ''}
+                        placeholder="Enter item name"
                         required={true}
-                        containerStyle={{ marginBottom: 16 }}
                         validationMsg='Item name is required'
+                        containerStyle={{ marginBottom: 16 }}
+                        defaultValue={defaultValue?.name ?? ''}
+                        autoFocus
+                        ref={ref => { inputRefs.current['name'] = ref }}
                     />
                     <InputField
-                        ref={ref => { inputRefs.current['quantity'] = ref }}
-                        formData={formDataRef}
-                        name={'quantity'}
-                        placeholder="Enter quantity"
-                        isEdit={isEdit}
                         id={defaultValue?.id ?? ''}
-                        defaultValue={defaultValue?.quantity ?? ''}
+                        name={'quantity'}
+                        formData={formDataRef}
+                        isEdit={isEdit}
+                        placeholder="Enter quantity"
                         required={true}
-                        containerStyle={{ marginBottom: 16 }}
                         validationMsg='Quantity is required'
+                        containerStyle={{ marginBottom: 16 }}
+                        defaultValue={defaultValue?.quantity ?? ''}
+                        returnKeyType="done"
+                        ref={ref => { inputRefs.current['quantity'] = ref }}
                     />
                     <PrimaryButton label={isEdit ? 'Update' : 'Add'} onPress={handleSubmit} containerStyle={styles.btnStyle} labelStyle={styles.btnLabel} />
                 </View>
