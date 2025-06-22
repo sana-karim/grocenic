@@ -22,7 +22,7 @@ export const ModalWrapper: React.FC<PropsWithChildren<ModalWrapperProps>> = ({ s
             style={modalContainerStyle}
             hideModalContentWhileAnimating
             onBackButtonPress={onClose}
-            onBackdropPress={onClose}
+        // onBackdropPress={onClose}
         >
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: 'transparent' }}>
                 {children}
