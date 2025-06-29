@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text } from "react-native";
 
 interface primaryTextProps {
-    text: string | number;
+    text: string | number | undefined;
     customStyle?: object;
 }
 
