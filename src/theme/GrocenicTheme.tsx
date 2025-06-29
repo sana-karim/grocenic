@@ -6,6 +6,8 @@ export const GrocenicTheme = {
         secondary: '#F6D776',
         accent: '#A3D2CA',
         background: '#F9FAF4',
+        // selectedBackground: '#CDE0C6',
+        selectedBackground: '#D4D9C9',
         white: '#FFFFFF',
         textPrimary: '#333333',
         textSecondary: '#666666',
