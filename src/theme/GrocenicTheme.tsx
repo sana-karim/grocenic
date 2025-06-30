@@ -16,6 +16,13 @@ export const GrocenicTheme = {
         success: '#6BCB77',
         danger: '#FF3B30'
     },
+    toastColors: {
+        success: '#4BB543',
+        warning: '#F9A825',
+        danger: '#E53935',
+        action: '#666666',
+        default: '#666666'
+    },
     spacing: {
         xs: 4,
         sm: 8,

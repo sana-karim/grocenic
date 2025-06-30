@@ -14,6 +14,7 @@ import { deleteItem, syncLocalItemsToRedux } from '../../redux/thunks/itemsThunk
 import { GrocenicTheme } from '../../theme/GrocenicTheme';
 import styles from './Home.style';
 import { addItem } from '../../redux/slice/itemSlice';
+import { showToast } from '../../components/toasts/utils/showToast';
 
 interface HomeProps {
     navigation?: NavigationProp<any>;
@@ -24,7 +25,6 @@ export const Home: React.FC<HomeProps> = ({ navigation }) => {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [editItem, setEditItem] = useState<any | null>(null);
     const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
-    const [showUndoDeleteToast, setShowUndoDeleteToast] = useState<boolean>(false);
     const deletedItemsRef = useRef<any[]>([]);
     const undoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -44,8 +44,7 @@ export const Home: React.FC<HomeProps> = ({ navigation }) => {
         };
     }, []);
 
-    const hideUndoToast = useCallback(() => {
-        setShowUndoDeleteToast(false);
+    const clearDeletedItemRef = useCallback(() => {
         deletedItemsRef.current = [];
     }, []);
 
@@ -75,20 +74,30 @@ export const Home: React.FC<HomeProps> = ({ navigation }) => {
             );
 
             setSelectedItems(new Set());
-            setShowUndoDeleteToast(true);
+
+            showToast({
+                type: 'action',
+                message: `${deletedItemsRef.current.length} item removed`,
+                actionLabel: 'Undo',
+                duration: 5000,
+                backgroundColor: GrocenicTheme.toastColors.danger,
+                onAction: () => {
+                    undoDelete();
+                },
+            });
 
             clearUndoTimeout();
 
             undoTimeoutRef.current = setTimeout(() => {
-                hideUndoToast();
-            }, 5000);
+                clearDeletedItemRef();
+            }, 6000);
 
         } catch (err) {
             Alert.alert('Error', 'Failed to delete some items');
             deletedItemsRef.current = [];
         }
 
-    }, [dispatch, selectedItemsArray, hideUndoToast]);
+    }, [dispatch, selectedItemsArray, clearDeletedItemRef]);
 
     const undoDelete = useCallback(async () => {
         if (deletedItemsRef.current.length > 0) {
@@ -97,7 +106,6 @@ export const Home: React.FC<HomeProps> = ({ navigation }) => {
                     deletedItemsRef.current.map(item => dispatch(addItem(item)))
                 );
                 deletedItemsRef.current = [];
-                setShowUndoDeleteToast(false);
                 clearUndoTimeout();
                 // if (undoTimeoutRef.current) {
                 //     clearTimeout(undoTimeoutRef.current);

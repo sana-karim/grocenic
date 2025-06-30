@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { StatusBar } from "react-native";
-import { ToastProvider } from 'react-native-toast-notifications';
+// import { ToastProvider } from 'react-native-toast-notifications';
 import MainNavigation from "./navigation/navigation";
 import { GrocenicTheme } from "./theme/GrocenicTheme";
 import BootSplash from "react-native-bootsplash";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "./components/toasts/utils/ToastConfig";
 
 export const Main = () => {
 
@@ -25,9 +27,10 @@ export const Main = () => {
                 animated={true}
                 backgroundColor={GrocenicTheme.colors.textPrimary}
             />
-            <ToastProvider>
-                <MainNavigation />
-            </ToastProvider>
+            {/* <ToastProvider> */}
+            <MainNavigation />
+            <Toast config={toastConfig} />
+            {/* </ToastProvider> */}
         </Provider>
     )
 }
