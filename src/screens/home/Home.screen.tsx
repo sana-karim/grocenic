@@ -13,8 +13,9 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { deleteItem, syncLocalItemsToRedux } from '../../redux/thunks/itemsThunks';
 import { GrocenicTheme } from '../../theme/GrocenicTheme';
 import styles from './Home.style';
-import { addItem } from '../../redux/slice/itemSlice';
 import { showToast } from '../../components/toasts/utils/showToast';
+import { LOCAL_STORAGE_KEYS } from '../../utils/asyncStorage/LocalStorageKeys';
+import { StorageManager } from '../../utils/asyncStorage/StorageManager';
 
 interface HomeProps {
     navigation?: NavigationProp<any>;
@@ -66,12 +67,19 @@ export const Home: React.FC<HomeProps> = ({ navigation }) => {
             return;
         }
 
-        deletedItemsRef.current = [...itemsToBeDelete];
+        deletedItemsRef.current = itemsToBeDelete.map(item => {
+            const index = items.items.findIndex(i => i.id === item.id);
+            return { item, index };
+        });
 
         try {
-            await Promise.all(
-                itemsToBeDelete.map((item: any) => dispatch(deleteItem(item.id)))
-            );
+            // Batch delete: filter out all selected items at once
+            const selectedIds = new Set(itemsToBeDelete.map(item => item.id));
+            const newItems = items.items.filter(item => !selectedIds.has(item.id));
+            // Dispatch setItems once
+            dispatch({ type: 'items/setItems', payload: newItems });
+            // Update local storage
+            await StorageManager.getInstance().setItemInStorage(LOCAL_STORAGE_KEYS.cart, newItems);
 
             setSelectedItems(new Set());
 
@@ -97,25 +105,28 @@ export const Home: React.FC<HomeProps> = ({ navigation }) => {
             deletedItemsRef.current = [];
         }
 
-    }, [dispatch, selectedItemsArray, clearDeletedItemRef]);
+    }, [dispatch, selectedItemsArray, clearDeletedItemRef, items.items]);
 
     const undoDelete = useCallback(async () => {
         if (deletedItemsRef.current.length > 0) {
             try {
-                await Promise.all(
-                    deletedItemsRef.current.map(item => dispatch(addItem(item)))
-                );
+                let currentItems = [...items.items];
+                const existingIds = new Set(currentItems.map(i => i.id));
+                const toRestore = [...deletedItemsRef.current]
+                    .filter(({ item }) => !existingIds.has(item.id))
+                    .sort((a, b) => a.index - b.index);
+                toRestore.forEach(({ item, index }) => {
+                    currentItems.splice(index, 0, item);
+                });
+                dispatch({ type: 'items/setItems', payload: currentItems });
+                await StorageManager.getInstance().setItemInStorage(LOCAL_STORAGE_KEYS.cart, currentItems);
                 deletedItemsRef.current = [];
                 clearUndoTimeout();
-                // if (undoTimeoutRef.current) {
-                //     clearTimeout(undoTimeoutRef.current);
-                //     undoTimeoutRef.current = null;
-                // }
             } catch (err) {
                 Alert.alert('Error', 'Failed to restore items');
             }
         }
-    }, [dispatch]);
+    }, [dispatch, items.items]);
 
     const toggleItemSelect = useCallback((item: any) => {
         setSelectedItems(prev => {
