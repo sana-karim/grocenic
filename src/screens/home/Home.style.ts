@@ -16,6 +16,8 @@ export default StyleSheet.create({
     },
     addItemBtnContainer: {
         width: '100%',
+        paddingVertical: 11,
+        paddingHorizontal: 10,
     },
     addItemBtn: {
         fontSize: GrocenicTheme.fontSize.large     

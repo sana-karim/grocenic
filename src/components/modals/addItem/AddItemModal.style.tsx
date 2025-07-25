@@ -39,6 +39,8 @@ export default StyleSheet.create({
         width: '100%'
     },
     btnLabel: {
+        paddingVertical: 11,
+        paddingHorizontal: 10,
         color: GrocenicTheme.colors.textPrimary,
         fontSize: GrocenicTheme.fontSize.large,
     }

@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         backgroundColor: GrocenicTheme.colors.primary,
         borderRadius: GrocenicTheme.borderRadius.md,
-        paddingVertical: 11,
-        paddingHorizontal: 10,
+        // paddingVertical: 11,
+        // paddingHorizontal: 10,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
