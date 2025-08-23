@@ -7,7 +7,8 @@ export interface InputFieldRef {
     value: string;             //Current text value
     validate: () => boolean;   //Run validation: returns true if valid
     reset: () => void;         //Clear the field and errors
-    //focus: () => void;       //focus the input from parent : Optional
+    clear: () => void;         //
+    focus: () => void;       //focus the input from parent : Optional
 }
 
 interface InputFieldProps {
@@ -104,15 +105,22 @@ export const InputField = forwardRef<InputFieldRef, InputFieldProps>(({
         validate: () => validate(),
         reset: () => {
             valueRef.current = '';
+            formData.current[name] = '';
+            inputRef.current?.clear();
             setError('');
         },
-        // focus: () => {
-        //     InteractionManager.runAfterInteractions(() => {
-        //         requestAnimationFrame(() => {
-        //             inputRef.current?.focus();
-        //         })
-        //     })
-        // }
+        clear: () => {
+            valueRef.current = '';
+            formData.current[name] = '';
+            inputRef.current?.clear();
+        },
+        focus: () => {
+            InteractionManager.runAfterInteractions(() => {
+                requestAnimationFrame(() => {
+                    inputRef.current?.focus();
+                })
+            })
+        }
     }));
 
     // === Handlers ===

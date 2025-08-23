@@ -36,7 +36,7 @@ export default StyleSheet.create({
     btnStyle: {
         marginBottom: GrocenicTheme.spacing.md,
         backgroundColor: GrocenicTheme.colors.secondary,
-        width: '100%'
+        width: '49.2%'
     },
     btnLabel: {
         paddingVertical: 11,

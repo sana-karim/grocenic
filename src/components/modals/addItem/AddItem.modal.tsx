@@ -31,7 +31,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ show, onClose, isEdi
 
     const dispatch = useAppDispatch();
 
-    const handleSubmit = () => {
+    const handleSubmit = (action: string) => {
 
         let allValid = true;
 
@@ -63,7 +63,13 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ show, onClose, isEdi
                 dispatch(editItem(payload));
             }
 
-            onClose();
+            if (action === "ADD_NEXT") {
+                Object.values(inputRefs.current).forEach(ref => ref?.reset());
+                //formDataRef.current = {}; // Clear form values
+                inputRefs.current['name']?.focus?.(); //focus first field again
+            } else {
+                onClose();
+            }
         }
     }
 
@@ -103,7 +109,10 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ show, onClose, isEdi
                         returnKeyType="done"
                         ref={ref => { inputRefs.current['quantity'] = ref }}
                     />
-                    <PrimaryButton label={isEdit ? 'Update' : 'Add'} onPress={handleSubmit} containerStyle={styles.btnStyle} labelStyle={styles.btnLabel} />
+                    <View style={{ display: "flex", flexDirection: 'row', justifyContent: "space-between" }}>
+                        <PrimaryButton label={isEdit ? 'Update' : 'Add'} onPress={() => handleSubmit('ADD')} containerStyle={[styles.btnStyle, isEdit && ({ width: '100%' })]} labelStyle={styles.btnLabel} />
+                        {!isEdit && <PrimaryButton label={'Add Next'} onPress={() => handleSubmit('ADD_NEXT')} containerStyle={styles.btnStyle} labelStyle={styles.btnLabel} />}
+                    </View>
                 </View>
             </View>
         </ModalWrapper >
