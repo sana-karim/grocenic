@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Animated, StyleSheet, TouchableOpacity } from "react-native";
+import { Animated, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Toast from "react-native-toast-message";
 import { GrocenicTheme } from "../../theme/GrocenicTheme";
 import { PrimaryText } from "../texts/PrimaryText";
@@ -44,7 +44,7 @@ export const AppToast: React.FC<AppToastProps> = ({ type, message, backgroundCol
                 )
             }
             <TouchableOpacity activeOpacity={0.8} onPress={handleDismiss} style={styles.closeButton}>
-                <PrimaryText text='X' customStyle={styles.closeText} />
+                <Image source={require('../../assets/images/close_icon_light.png')} />
             </TouchableOpacity>
         </Animated.View >
     );
