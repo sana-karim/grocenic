@@ -162,6 +162,8 @@ export const InputField = forwardRef<InputFieldRef, InputFieldProps>(({
                 onSubmitEditing={handleSubmitEditing}
                 onBlur={handleBlur}
                 blurOnSubmit={false}
+                cursorColor={GrocenicTheme.colors.secondary}
+                selectionColor={GrocenicTheme.colors.secondary}
                 style={[
                     styles.inputField,
                     inputStyle,
